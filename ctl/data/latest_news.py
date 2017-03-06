@@ -33,7 +33,6 @@ def latest_url():
 
 def latest_news():
     mp4 = []
-    src = []
     for i in all_files:
         if i.find("mp4") != -1 and i[0].isdigit():
             mp4.append(os.path.join(VIDEO_ROOT, i))

@@ -1,5 +1,6 @@
 import subprocess
-from datetime import datetime, time
+from datetime import datetime
+
 
 def simple_command(self):
     self = subprocess.check_output(str(self).split())
@@ -12,7 +13,7 @@ def command(self):
 
 
 def commands(self, cmd):
-#     This function run or stop all timers
+    #     This function run or stop all timers
     ex = []
     flag = 0
     for i in self:
@@ -26,7 +27,8 @@ def commands(self, cmd):
     else:
         return ex
 
-#  list command to start timers for run stream
+
+# list command to start timers for run stream
 timer_news = ["systemctl --user start news_start.timer",
               "systemctl --user start news_stop.timer",
               "systemctl --user start news_stop_repeate.timer",
@@ -34,7 +36,7 @@ timer_news = ["systemctl --user start news_start.timer",
 
 
 class Sys:
-#     Sys class to get system and status information, run systemd service and timers
+    #     Sys class to get system and status information, run systemd service and timers
     @staticmethod
     def timers_start():
         return commands(timer_news, "start")
@@ -53,8 +55,7 @@ class Sys:
             return "False"
         else:
             return "Active"
-        
-        
+
     @staticmethod
     def err():
         return command("journalctl -p err -b")
@@ -78,13 +79,13 @@ class Sys:
     def stream_stop():
         command("systemctl --user stop news.service")
         return "Stop"
-    
+
     @staticmethod
     def next_start_release():
-#         get times run streams
+        #         get times run streams
         try:
             timers_out = command("systemctl --user list-timers ")
-            col= []
+            col = []
             for i in timers_out.split("\n"):
                 col.append(i.split())
             next_start = []
