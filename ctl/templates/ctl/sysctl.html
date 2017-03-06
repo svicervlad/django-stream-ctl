@@ -1,0 +1,263 @@
+<!--django code-->
+{% extends 'base.html' %} {% block content %} {% load static %}
+<!--django code end-->
+<article class="container" id="context" style="display: none;">
+	<article class="row sm-mb-6">
+		<article class="col-lg-8">
+
+			<article>
+				<p id='currentTime'></p>
+			</article>
+
+			<h1 class="mb-4">
+				<span class="fa fa-video-camera"></span>
+				<span>
+					Streaming file:
+				</span>
+				<span id="stream_file"></span>
+			</h1>
+
+			<video class="mw-100" id="video" src="" controls preload="">
+				Your browser does not support the video tag.
+			</video>
+			<article id="stream_time"></article>
+			<article id="timer" class="text-center">
+				<h1><span id="hourglass" class="fa fa-hourglass fa-spin fa-1x fa-fw"></span> Next autostart stream:
+				</h1>
+				<h3 id="next_start-1"></h3>
+				<h3 id="next_start-2"></h3>
+			</article>
+		</article>
+
+		<article class="col-lg-3">
+
+			<article>
+				<h2>
+					<span class="glyphicon glyphicon-forward"></span> Status stream:
+				</h2>
+
+				<article class="text-center mt-3 mb-3">
+					<i id='status' class="fa fa-spinner fa-pulse fa-5x fa-fw" aria-hidden="true"></i>
+
+				</article>
+				<button id="stream_start" type="button" class="btn btn-success  btn-lg">
+					<span class="fa fa-play"> </span>
+						Stream start
+				</button>
+
+				<button id="stream_stop" type="button" class="btn btn-danger  btn-lg">
+						<span class="fa fa-stop"> </span>
+								Stream stop
+					 </button>
+			</article>
+
+			<article class="mt-2">
+
+				<button id="timers_start" type="button" class="btn btn-success btn-lg">
+					<span class="fa fa-play"> </span>
+						Timers start 
+				</button>
+
+				<button id="timers_stop" type="button" class="btn btn-danger btn-lg">
+					<span class="fa fa-stop">  </span>
+						Timers stop
+				</button>
+
+			</article>
+
+			<article class="mt-2">
+
+				<a href="http://176.126.163.102:8080/">
+					<button type="button" class="btn btn-warning btn-lg">
+						<img src="{% static 'vlc_logo.png' %}" height="40px" alt="">
+						Vlc control
+					</button>
+				</a>
+			</article>
+
+		</article>
+
+	</article>
+
+	<article class="row justify-content-star">
+
+		<article id="journal" class="bg-danger text-white">
+			<h2 class="">
+				<span class="ml-2 fa fa-exclamation-triangle text-white"></span> Journal
+				err
+			</h2>
+			<article class="text-danger">
+				<ul class="list-group" style="overflow: hidden; max-height: 300px;"></ul>
+			</article>
+		</article>
+
+	</article>
+
+</article>
+<!--django code-->
+{% endblock %} {%block script %}
+<!--django code end-->
+<script>
+//Show context
+$("#context").delay(1200).slideDown(500);
+var b = navigator.userAgent.toString();
+if (b.search("Mobile") != "-1") {
+	$("video").attr("preload", "none");
+}
+$(function() {
+	function generate_html() {
+		// generate action for button
+		$("#stream_start").click(function() {
+			command("/stream_start");
+		});
+		$("#stream_stop").click(function() {
+			command("/stream_stop");
+		});
+		$("#timers_start").click(function() {
+			command("/timers_start");
+		});
+		$("#timers_stop").click(function() {
+			command("/timers_stop");
+		});
+		//get url latest new's release file
+		$("#video").attr(
+			"src", "http://176.126.163.102/" + JSON.parse(
+				sessionStorage.getItem("full_file")));
+		$("#journal ul").hide();
+	}
+	generate_html();
+	function command(cmd) {
+		//send to url and get context from get_data function
+		$.ajax({
+			url: cmd,
+		}).done(function() {
+			return get_data();
+		});
+	}
+
+	function get_data() {
+		//Get context in dictionary formats from server and add to sessionStorage
+		$.get("/ajax", function(data) {
+			for (var index in data) {
+				if (!data.hasOwnProperty(index)) {
+					continue;
+				}
+				sessionStorage.setItem(index, JSON.stringify(
+					data[index]));
+			}
+		});
+	}
+	get_data();
+	setInterval(get_data, 5000);
+
+	function journal() {
+		//Add error list to journal section
+		if (JSON.parse(sessionStorage.getItem("journal"))) {
+			var list = [];
+			var err = JSON.parse(sessionStorage.getItem(
+				"journal"));
+			for (i = 0; i <= err.length; i++) {
+				list.push($("<li class='list-group-item'>").text(
+					err[i]));
+			}
+			$("#journal ul").html(list);
+		}
+	}
+
+	function stream() {
+		//check stream status and show/hide button
+		if (sessionStorage.getItem("stream") == '"False"') {
+			$("#stream_stop").hide();
+			$("#stream_start").show();
+			//stop rotate glyph and hide
+			$("#status").hide();
+		} else if (sessionStorage.getItem("stream") ==
+			'"Active"') {
+			$("#stream_stop").show();
+			$("#stream_start").hide();
+			$("#status").show();
+		}
+	}
+
+	function timers() {
+		//check activity timers and show/hide button
+		if (sessionStorage.getItem("timers") == '"False"') {
+			$("#timers_stop").hide();
+			$("#timers_start").show();
+			$("#timer").hide();
+		} else if (sessionStorage.getItem("timers") ==
+			'"Active"') {
+			$("#timers_stop").show();
+			$("#timers_start").hide();
+			$("#timer").show();
+		}
+	}
+
+	function file() {
+		//get filename to streaming
+		$("#stream_file").html(sessionStorage.getItem("file"));
+	}
+
+	function curr_date() {
+		var d = new Date().toLocaleString();
+		$("#currentTime").html(d);
+	}
+	setInterval(curr_date, 1000);
+
+	function next_time() {
+		// get time left to streaming
+		if (JSON.parse(sessionStorage.getItem("next_start")) !=
+			"False") {
+			$("#next_start-1").show();
+			var date_n = new Date(JSON.parse(sessionStorage.getItem(
+				"next_start"))[0]);
+			$("#next_start-1").countdown(date_n, function(
+				event) {
+				$(this).html(event.strftime(
+					'%D days %H:%M:%S'));
+			});
+			$("#next_start-2").show();
+			var date_f = new Date(JSON.parse(sessionStorage.getItem(
+				"next_start"))[1]);
+			$("#next_start-2").countdown(date_f, function(
+				event) {
+				$(this).html(event.strftime(
+					'%D days %H:%M:%S'));
+			});
+		} else {
+			$("#next_start-1").hide();
+			$("#next_start-2").hide();
+		}
+	}
+	setTimeout(function() {
+		//wait for get context and start functions
+		timers();
+		stream();
+		journal();
+		$("#journal ul").fadeIn(300);
+		file();
+		next_time();
+		$("#video").attr(
+			"src", "http://176.126.163.102/" +
+			JSON.parse(
+				sessionStorage.getItem(
+					"full_file")));
+	}, 1000);
+
+	function update() {
+		//update elements
+		setInterval(file, 5000);
+		setInterval(stream, 1000);
+		setInterval(journal, 10000);
+		setInterval(timers, 1000);
+		setInterval(next_time, 5000);
+		setInterval($("#video").attr(
+				"src", "http://176.126.163.102/" + JSON.parse(
+					sessionStorage.getItem("full_file"))),
+			1000000);
+	}
+	setTimeout(update, 1000);
+});
+
+</script>
+{% endblock %}

@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+
+	<head>
+		{% load static %}
+		<meta charset="UTF-8">
+		<title>Streaming control</title>
+		<link rel="stylesheet" href="{% static 'base.css' %}">
+		<link rel="stylesheet" href="{% static 'bootstrap.min.css'%}">
+		<link rel="shortcut icon" href="{%  static 'favicon.ico' %}">
+		<script src="{% static 'awesome_font.js' %}""></script>
+		<script src="{% static 'jquery-3.1.1.slim.min.js'%}"></script>
+		<script src="{% static 'tether.min.js'%}"></script>
+		<script src="{%static 'bootstrap.min.js'%}"></script>
+		<script src="{% static 'jquery-3.1.1.min.js'%}"></script>
+		<script src="{% static 'jquery.countdown.js' %}"></script>
+		<meta name="viewport" content="width=device-width, initial-scale=0.6, maximum-scale=1, user-scalable=no">
+		{% block stylesheet %}{% endblock %}
+	</head>
+
+	<body>
+		<header>
+			<article class="page-header">
+				<article class="container">
+					<p id="test"><a>rtmp://176.126.163.102/live</a></p>
+					<h1><span class="fa  fa-free-code-camp" style="font-size:2em;color:#d9534f;">S</span>treaming
+						control</h1>
+				</article>
+			</article>
+		</header>
+		<main>
+			{% block content %} {% endblock %}
+		</main>
+		<footer class="footer text-center">
+			<p class="font-italic">&copy; 2017 Sadretdinov Vladislav</p>
+		</footer>
+		{%block script %}{% endblock %}
+	</body>
+
+</html>
