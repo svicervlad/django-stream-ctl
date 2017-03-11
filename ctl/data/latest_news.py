@@ -30,6 +30,6 @@ sout = '#duplicate{dst=std{access=rtmp,mux=ffmpeg{mux=flv},' \
 
 if __name__ == "__main__":
     # execute only if run as a script
-    command(str("/usr/bin/cvlc -vvv " + str(latest_news()) + " --sout " + sout))
+    command(str("/usr/bin/cvlc -vvv " +  str(latest_news()) + " --sout " + sout))
 
 

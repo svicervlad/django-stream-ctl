@@ -139,7 +139,7 @@ $(function() {
 
 	function get_data() {
 		//Get context in dictionary formats from server and add to sessionStorage
-		$.get("/ajax", function(data) {
+		$.get("/ajax", {cache:false},function(data) {
 			for (var index in data) {
 				if (!data.hasOwnProperty(index)) {
 					continue;
