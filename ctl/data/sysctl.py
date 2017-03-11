@@ -90,11 +90,13 @@ class Sys:
                 col.append(i.split())
             next_start = []
             for data in col[1:5]:
-                if data[-2].find("stop") != -1:
+                if data[-2].find("stop") == -1:
                     next_start.append(data[1:3])
             date_f = []
             for i in next_start:
                 date_f.append(datetime.strptime(str(i[0] + " " + i[1]), '%Y-%m-%d %H:%M:%S').isoformat())
-            return date_f
+            if next_start:
+                
+                return date_f
         except:
             return "False"

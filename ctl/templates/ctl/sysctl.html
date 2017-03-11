@@ -22,7 +22,8 @@
 			</video>
 			<article id="stream_time"></article>
 			<article id="timer" class="text-center">
-				<h1><span id="hourglass" class="fa fa-hourglass fa-spin fa-1x fa-fw"></span> Next autostart stream:
+				<h1><span id="hourglass" class="fa fa-hourglass fa-1x fa-fw"></span> Next
+					autostart stream:
 				</h1>
 				<h3 id="next_start-1"></h3>
 				<h3 id="next_start-2"></h3>
@@ -126,6 +127,7 @@ $(function() {
 		$("#journal ul").hide();
 	}
 	generate_html();
+
 	function command(cmd) {
 		//send to url and get context from get_data function
 		$.ajax({
@@ -207,10 +209,13 @@ $(function() {
 	function next_time() {
 		// get time left to streaming
 		if (JSON.parse(sessionStorage.getItem("next_start")) !=
-			"False") {
+			"False" || sessionStorage.getItem("next_start") !== null) {
 			$("#next_start-1").show();
 			var date_n = new Date(JSON.parse(sessionStorage.getItem(
 				"next_start"))[0]);
+			date_n = new Date(date_n.getFullYear(), date_n.getMonth(),
+				date_n.getDate(), date_n.getHours() - 2, date_n.getMinutes(),
+				date_n.getSeconds());
 			$("#next_start-1").countdown(date_n, function(
 				event) {
 				$(this).html(event.strftime(
@@ -219,6 +224,9 @@ $(function() {
 			$("#next_start-2").show();
 			var date_f = new Date(JSON.parse(sessionStorage.getItem(
 				"next_start"))[1]);
+			date_f = new Date(date_f.getFullYear(), date_f.getMonth(),
+				date_f.getDate(), date_f.getHours() - 2, date_f.getMinutes(),
+				date_f.getSeconds());
 			$("#next_start-2").countdown(date_f, function(
 				event) {
 				$(this).html(event.strftime(

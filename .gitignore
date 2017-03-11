@@ -1,5 +1,7 @@
 ctl.komodoproject
 .idea/
+static/ctl/third_party/
+static/
 *db.sqlite3*
 # Django Recommended
 *.egg-info

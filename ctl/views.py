@@ -1,7 +1,7 @@
 from django.views.generic import TemplateView
 from ctl.data.sysctl import Sys
 from django.shortcuts import redirect
-from ctl.data.latest_news import latest_info, latest_url
+from ctl.data.latest_news import latest_news
 import json
 from django.http import HttpResponse
 from django.views.decorators.gzip import gzip_page
@@ -26,7 +26,7 @@ class Sysctl(TemplateView):
 
     def timers_start(self):
         Sys.timers_start()
-        return redirect('/')
+        return redir1ect('/')
 
     def sream_start(self):
         Sys.stream_start()
@@ -47,10 +47,10 @@ class Sysctl(TemplateView):
 
         data = {}
         data['timers'] = Sys.list_timers()
-        data['file'] = latest_info()
-        data['full_file'] = latest_url()
+        data['file'] = latest_news().split('/')[-1]
+        data['full_file'] = latest_news()[19::]
         data['journal'] = sp(Sys.err())[::-1][0:6]
         data['stream'] = Sys.stream_status()
         data["next_start"] = Sys.next_start_release()
-        gzip_page(ajax())
         return HttpResponse(json.dumps(data), content_type="application/json")
+        gzip_page(ajax())
